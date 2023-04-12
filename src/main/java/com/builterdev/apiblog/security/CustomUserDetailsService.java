@@ -1,4 +1,4 @@
-package com.builterdev.apiblog.service;
+package com.builterdev.apiblog.security;
 
 import com.builterdev.apiblog.entity.User;
 import com.builterdev.apiblog.repository.UserRepository;
