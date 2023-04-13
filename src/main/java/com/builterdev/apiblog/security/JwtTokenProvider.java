@@ -19,7 +19,7 @@ public class JwtTokenProvider {
     private String jwtSecret;
 
     @Value("${app.jwt-expiration-milliseconds}")
-    private String jwtExpirationDate;
+    private long jwtExpirationDate;
 
     // generate JWT token
     public String generateToken(Authentication authentication) {

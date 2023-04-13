@@ -7,7 +7,9 @@ import com.builterdev.apiblog.payload.LoginDto;
 import com.builterdev.apiblog.payload.RegisterDto;
 import com.builterdev.apiblog.repository.RoleRepository;
 import com.builterdev.apiblog.repository.UserRepository;
+import com.builterdev.apiblog.security.JwtTokenProvider;
 import com.builterdev.apiblog.service.AuthService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +29,9 @@ public class AuthServiceImpl implements AuthService {
     private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     public AuthServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
         this.userRepository = userRepository;
@@ -43,7 +48,9 @@ public class AuthServiceImpl implements AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return "User Logged in successfully";
+        String token = jwtTokenProvider.generateToken(authentication);
+
+        return token;
 
     }
 
