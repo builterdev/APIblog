@@ -3,6 +3,7 @@ package com.builterdev.apiblog.controller;
 import com.builterdev.apiblog.payload.PostDto;
 import com.builterdev.apiblog.payload.PostResponse;
 import com.builterdev.apiblog.service.PostService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +22,9 @@ public class PostController {
         this.postService = postService;
     }
 
+    @SecurityRequirement(
+            name = "Bear Authentication"
+    )
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto) {
@@ -35,6 +39,10 @@ public class PostController {
         return new ResponseEntity<>(postService.getAllPosts(pageNo, pageSize), HttpStatus.OK);
     }
 
+    @SecurityRequirement(
+            name = "Bear Authentication"
+    )
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{postId}")
     public ResponseEntity<PostDto> updatePost(@RequestBody PostDto postDto,
                                               @PathVariable(name = "postId") Long postId) {

@@ -2,6 +2,8 @@ package com.builterdev.apiblog.config;
 
 import com.builterdev.apiblog.security.JwtAuthenticationEntryPoint;
 import com.builterdev.apiblog.security.JwtAuthenticationFilter;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -22,6 +24,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableMethodSecurity
+@SecurityScheme(
+        name = "Bear Authentication",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 public class SecurityConfig {
 
     private UserDetailsService userDetailsService;
@@ -54,6 +62,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                                 .requestMatchers("/api/auth/**").permitAll()
+                                .requestMatchers("/swagger-ui/**").permitAll()
+                                .requestMatchers("/v3/api-docs/**").permitAll()
                                 .anyRequest().authenticated()
                         ).exceptionHandling(exception -> exception
                         .authenticationEntryPoint(authenticationEntryPoint)
