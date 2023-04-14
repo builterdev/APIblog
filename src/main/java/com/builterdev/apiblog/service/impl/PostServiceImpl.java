@@ -3,9 +3,14 @@ package com.builterdev.apiblog.service.impl;
 import com.builterdev.apiblog.entity.Post;
 import com.builterdev.apiblog.exception.ResourceNotFoundException;
 import com.builterdev.apiblog.payload.PostDto;
+import com.builterdev.apiblog.payload.PostResponse;
 import com.builterdev.apiblog.repository.PostRepository;
 import com.builterdev.apiblog.service.PostService;
 import com.builterdev.apiblog.utils.Mappers;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,9 +37,20 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
-        return posts.stream().map(post -> Mappers.mapToDTO(post)).collect(Collectors.toList());
+    public PostResponse getAllPosts(int pageNo, int pageSize) {
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+
+        Page<Post> posts = postRepository.findAll(pageable);
+
+        PostResponse postResponse = new PostResponse();
+        postResponse.setPosts(posts.getContent().stream().map(post -> Mappers.mapToDTO(post)).collect(Collectors.toList()));
+        postResponse.setTotalPages(posts.getTotalPages());
+        postResponse.setTotalElements(posts.getTotalElements());
+        postResponse.setSize(posts.getSize());
+        postResponse.setLast(posts.isLast());
+
+        return postResponse;
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.builterdev.apiblog.service.impl;
 import com.builterdev.apiblog.entity.Role;
 import com.builterdev.apiblog.entity.User;
 import com.builterdev.apiblog.exception.CustomExceptionBlog;
+import com.builterdev.apiblog.exception.ResourceNotFoundException;
 import com.builterdev.apiblog.payload.LoginDto;
 import com.builterdev.apiblog.payload.RegisterDto;
 import com.builterdev.apiblog.repository.RoleRepository;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -82,6 +84,34 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         return "User registered successfully";
+
+    }
+
+    public String updateRole(String role, String roleToRemove, Long userId) {
+
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User", "id", userId)
+        );
+
+        Role findRoleToAdd = roleRepository.findByName(role).orElseThrow(
+                () -> new ResourceNotFoundException("Role", "Name", 0)
+        );
+
+        Role findRoleToRemove = roleRepository.findByName(roleToRemove).orElseThrow(
+                () -> new ResourceNotFoundException("Role", "Name", 0)
+        );
+
+        boolean isRemoved = user.getRoles().removeIf(role_search -> role_search.equals(findRoleToRemove));
+
+        if(isRemoved){
+            user.getRoles().add(findRoleToAdd);
+            userRepository.save(user);
+        }
+        else {
+            throw new CustomExceptionBlog(HttpStatus.BAD_REQUEST, "Role was not deleted, something went wrong!");
+        }
+
+        return "Role updated successfully";
 
     }
 }

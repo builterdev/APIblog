@@ -5,18 +5,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
+import java.util.List;
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostDto {
+public class PostResponse {
 
-    private Long id;
-    private String title;
-    private String description;
-    private String content;
-    private Set<CommentDto> comments;
+    private List<PostDto> posts;
+    private int TotalPages;
+    private long TotalElements;
+    private int Size;
+    private boolean isLast;
 
 }

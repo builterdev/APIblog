@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
 @AllArgsConstructor
@@ -26,5 +28,15 @@ public class Post {
 
     @Column(nullable = false)
     private String content;
+
+    /*
+    * mappedBy attribute tells JPA that postId field in the comments entity is responsible
+    * for managing the relationship
+    *
+    * cascade = CascadeType.ALL ensures that any operations performed on the Post entity
+    * (such as persist, merge, remove) will be cascaded to the related comment entities as well
+    */
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
 }

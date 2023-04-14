@@ -7,10 +7,7 @@ import com.builterdev.apiblog.service.AuthService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -46,6 +43,13 @@ public class AuthController {
     @PostMapping(value = {"/register", "signup"})
     public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
         return new ResponseEntity<>(authService.register(registerDto), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/update-role/{userId}/{new_role}/{old_role}")
+    public ResponseEntity<String> updateRole(@PathVariable(name = "userId") Long userId,
+                                             @PathVariable(name = "new_role") String newRole,
+                                             @PathVariable(name = "old_role") String oldRole){
+        return new ResponseEntity<>(authService.updateRole(newRole, oldRole, userId), HttpStatus.OK);
     }
 
 }
